@@ -5,36 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>로그인 • Discord-Style</title>
 
-  <!--
-    ✅ 목표
-    - 디스코드 로그인 화면 느낌의 다크톤 UI
-    - 좌: 로그인 폼 / 우: QR 안내 패널 (모바일에서는 폼만 표시)
-    - 단일 HTML 파일 (CSS/JS 포함)로 과제/포트폴리오에 바로 사용 가능
-
-    🎨 색상 토큰 (Discord 유사 톤)
-    --bg-1: #313338;  (카드 배경)
-    --bg-2: #2b2d31;  (페이지 배경)
-    --text: #f2f3f5;  (본문 텍스트)
-    --muted: #b5bac1; (보조 텍스트)
-    --focus: #5865f2; (액센트/포커스)
-    --danger: #ed4245; (경고)
-
-    📱 반응형 전략
-    - 1024px 이상: 폼(좌) + QR(우) 2단 그리드
-    - 768~1023px: 폭을 줄여 카드 중앙 정렬, QR는 아래로 스택
-    - 767px 이하: QR 섹션 숨김, 폼만 표시 (모바일 최적화)
-
-    ♿ 접근성
-    - label/for 매핑, aria-* 속성, 키보드 포커스 스타일
-
-    💡 과제 요구에 맞게 수정 포인트
-    - 로고/텍스트, 버튼 문구, 색상 토큰, 폼 필드, 검증 규칙
-    - 주석은 최대한 유지 (노아의 요청: CSS 주석 꼼꼼히)
-  -->
-
   <style>
     :root{
-      /* ----- 색상 토큰 (테마 변경 시 여기만 수정) ----- */
       --bg-1: #313338;
       --bg-2: #2b2d31;
       --text: #f2f3f5;
@@ -44,93 +16,74 @@
       --danger: #ed4245;
       --input: #1e1f22;
       --ring: 0 0 0 2px rgba(88,101,242,.45);
-      --radius: 16px; /* 카드/버튼 둥근 모서리 통일 */
+      --radius: 16px;
     }
 
-    /* ----- 페이지 배경 & 중앙 정렬 래퍼 ----- */
     html, body{ height: 100%; }
     body{
       margin: 0;
-      background: radial-gradient(1200px 600px at 10% -10%, #404249 0, transparent 60%),
-                  radial-gradient(1000px 500px at 110% 10%, #3a3c42 0, transparent 60%),
-                  var(--bg-2);
+      background: var(--bg-2);
       color: var(--text);
       font: 14px/1.4 "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .container{
-      /* 가운데 정렬 + 최대 폭 제한 */
-      min-height: 100%;
-      display: grid;
-      place-items: center; /* 수직/수평 중앙 */
-      padding: 24px;
-    }
-
-    /* ----- 카드(로그인 폼 + QR 2단) ----- */
     .card{
       width: 100%;
-      max-width: 920px; /* 데스크톱에서 적당한 폭 */
+      max-width: 480px;
       background: var(--bg-1);
       border-radius: var(--radius);
       box-shadow: 0 10px 30px rgba(0,0,0,.35);
-      display: grid;
-      grid-template-columns: 1fr 1fr; /* 좌/우 2단 */
-      gap: 0;
-      overflow: hidden; /* 둥근모서리 밖 그림자/자식클립 */
+      padding: 40px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
       border: 1px solid rgba(255,255,255,.04);
     }
 
-    /* ----- 좌측: 로그인 섹션 ----- */
-    .left{
-      padding: 40px 36px;
-      display: grid;
-      align-content: center; /* 수직 가운데 */
-      gap: 22px;
-    }
     .brand{
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 8px;
+      justify-content: center;
     }
     .logo{
-      /* 간단한 로고 대체 (SVG 원형) */
-      width: 32px; height: 32px; border-radius: 999px; background: var(--focus);
+      width: 36px; height: 36px; border-radius: 999px; background: var(--focus);
       display: grid; place-items: center; color: white; font-weight: 800; font-size: 14px;
-      user-select: none;
     }
-    .title{ font-size: 20px; font-weight: 800; }
-    .subtitle{ color: var(--muted); }
+    .title{ font-size: 22px; font-weight: 800; text-align: center; }
+    .subtitle{ color: var(--muted); text-align: center; }
 
-    /* ----- 폼 공통 ----- */
     .form{
-      display: grid;
+      display: flex;
+      flex-direction: column;
       gap: 16px;
     }
-    .field{ display: grid; gap: 8px; }
+    .field{ display: flex; flex-direction: column; gap: 6px; }
     label{ font-size: 12px; font-weight: 700; color: #dbdee1; }
     .input{
       background: var(--input);
       border: 1px solid rgba(255,255,255,.06);
       color: var(--text);
       border-radius: 8px;
-      padding: 12px 12px;
+      padding: 12px;
       outline: none;
       transition: box-shadow .2s, border-color .2s, background .2s;
     }
-    .input::placeholder{ color: #8a8f98; }
     .input:focus{
       border-color: var(--focus);
       box-shadow: var(--ring);
-      background: #232428;
     }
 
     .row-between{
       display: flex; align-items: center; justify-content: space-between;
       gap: 12px;
     }
+
     .checkbox{
-      display: inline-flex; align-items: center; gap: 8px; color: var(--muted);
+      display: inline-flex; align-items: center; gap: 6px; color: var(--muted);
       user-select: none; cursor: pointer;
     }
     .checkbox input{ accent-color: var(--focus); }
@@ -138,186 +91,86 @@
     .btn{
       border: 0; border-radius: 8px; padding: 12px 16px; font-weight: 700;
       background: var(--focus); color: white; cursor: pointer;
-      transition: transform .06s ease, filter .2s, background .2s;
+      transition: transform .06s ease, filter .2s;
     }
     .btn:active{ transform: translateY(1px); }
     .btn:hover{ filter: brightness(1.05); }
-    .btn:focus-visible{ outline: none; box-shadow: var(--ring); }
 
     .error{ color: var(--danger); font-size: 12px; min-height: 16px; }
 
-    .divider{ display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; color: var(--muted); }
-    .divider::before, .divider::after{ content: ""; height: 1px; background: rgba(255,255,255,.08); }
+    .divider{ display: flex; align-items: center; justify-content: center; color: var(--muted); }
+    .divider::before, .divider::after{ content: ""; flex:1; height: 1px; background: rgba(255,255,255,.08); margin: 0 8px; }
 
-    .oauth{
-      display: grid; gap: 10px;
-    }
-    .btn-secondary{
-      background: #41434a; color: #fff; font-weight: 600;
-    }
-    .btn-secondary:hover{ filter: brightness(1.06); }
+    .oauth{ display: flex; flex-direction: column; gap: 10px; }
+    .btn-secondary{ background: #41434a; color: #fff; font-weight: 600; }
 
-    .helper{ color: var(--muted); font-size: 12px; }
+    .helper{ color: var(--muted); font-size: 12px; text-align: center; }
     .link{ color: var(--focus); text-decoration: none; font-weight: 700; }
     .link:hover{ text-decoration: underline; }
-
-    /* ----- 우측: QR 섹션 ----- */
-    .right{
-      background:
-        radial-gradient(400px 200px at 20% 10%, rgba(88,101,242,.15), transparent 60%),
-        linear-gradient(180deg, #2f3136 0%, #2b2d31 100%);
-      padding: 40px 36px;
-      display: grid; align-content: center; gap: 18px;
-      border-left: 1px solid rgba(255,255,255,.04);
-    }
-    .qr-card{
-      background: #202225; border: 1px solid rgba(255,255,255,.06);
-      border-radius: 12px; padding: 16px; width: 220px; height: 220px;
-      display: grid; place-items: center; margin: 0 auto;
-    }
-    .qr{
-      /* 실사용 시 실제 QR 이미지로 대체 가능 */
-      width: 160px; height: 160px; border-radius: 8px;
-      background:
-        repeating-linear-gradient(45deg, #fff 0 10px, #ccc 10px 20px);
-      filter: contrast(1.2) grayscale(.2);
-    }
-    .qr-title{ font-size: 18px; font-weight: 800; text-align: center; }
-    .qr-desc{ color: var(--muted); text-align: center; }
-
-    /* ----- 푸터 영역 (저작권/설명 등) ----- */
-    .footer{ text-align: center; color: #8f9298; font-size: 12px; margin-top: 8px; }
-
-    /* ----- 반응형 ----- */
-    @media (max-width: 1023px){
-      .card{ grid-template-columns: 1fr; max-width: 640px; }
-      .right{ border-left: 0; border-top: 1px solid rgba(255,255,255,.06); }
-    }
-    @media (max-width: 767px){
-      .card{ max-width: 520px; }
-      .right{ display: none; } /* 모바일에서는 QR 숨김 */
-    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <main class="card" role="main" aria-labelledby="loginTitle">
-      <!-- 좌측: 로그인 폼 영역 -->
-      <section class="left">
-        <div class="brand" aria-hidden="true">
-          <div class="logo" title="App Logo">D</div>
-          <div class="title">다시 만나서 반가워요!</div>
-        </div>
-        <p id="loginTitle" class="subtitle">계속하려면 계정에 로그인하세요.</p>
+  <main class="card">
+    <div class="brand">
+      <div class="logo">D</div>
+      <div class="title">다시 만나서 반가워요!</div>
+    </div>
+    <p class="subtitle">계속하려면 계정에 로그인하세요.</p>
 
-        <form class="form" id="loginForm" novalidate>
-          <!-- 이메일 필드 -->
-          <div class="field">
-            <label for="email">이메일 <span aria-hidden="true" style="color:var(--danger)">*</span></label>
-            <input id="email" name="email" class="input" type="email" placeholder="name@example.com" autocomplete="username" required aria-required="true" />
-            <div class="error" id="emailError" aria-live="polite"></div>
-          </div>
+    <form class="form" id="loginForm" novalidate>
+      <div class="field">
+        <label for="email">이메일</label>
+        <input id="email" class="input" type="email" placeholder="name@example.com" required />
+        <div class="error" id="emailError"></div>
+      </div>
 
-          <!-- 비밀번호 필드 + 표시 토글 -->
-          <div class="field">
-            <label for="password">비밀번호 <span aria-hidden="true" style="color:var(--danger)">*</span></label>
-            <div style="position:relative">
-              <input id="password" name="password" class="input" type="password" placeholder="••••••••" autocomplete="current-password" required aria-required="true" />
-              <button type="button" id="togglePw" aria-label="비밀번호 표시 전환"
-                style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:transparent; color:#c7cbcf; border:0; cursor:pointer; font-weight:700;">
-                보기
-              </button>
-            </div>
-            <div class="error" id="passwordError" aria-live="polite"></div>
-          </div>
+      <div class="field">
+        <label for="password">비밀번호</label>
+        <input id="password" class="input" type="password" placeholder="••••••••" required />
+        <div class="error" id="passwordError"></div>
+      </div>
 
-          <div class="row-between">
-            <label class="checkbox">
-              <input type="checkbox" id="remember" />
-              <span>로그인 상태 유지</span>
-            </label>
-            <a href="#" class="link" onclick="event.preventDefault(); alert('비밀번호 찾기: 라우팅 미연결 데모입니다.');">비밀번호를 잊으셨나요?</a>
-          </div>
+      <div class="row-between">
+        <label class="checkbox">
+          <input type="checkbox" id="remember" /> 로그인 상태 유지
+        </label>
+        <a href="#" class="link" onclick="event.preventDefault(); alert('비밀번호 찾기 기능은 데모입니다.');">비밀번호 찾기</a>
+      </div>
 
-          <button class="btn" type="submit" id="submitBtn">로그인</button>
+      <button class="btn" type="submit">로그인</button>
 
-          <div class="divider">또는</div>
+      <div class="divider">또는</div>
 
-          <!-- 소셜 로그인 버튼 묶음 (실서비스에서는 각 OAuth 라우팅 연결) -->
-          <div class="oauth" aria-label="소셜 로그인">
-            <button class="btn btn-secondary" type="button" onclick="alert('Google OAuth: 데모 버튼입니다.');">Google로 계속</button>
-            <button class="btn btn-secondary" type="button" onclick="alert('GitHub OAuth: 데모 버튼입니다.');">GitHub로 계속</button>
-          </div>
+      <div class="oauth">
+        <button class="btn btn-secondary" type="button" onclick="alert('Google OAuth 데모');">Google로 계속</button>
+        <button class="btn btn-secondary" type="button" onclick="alert('GitHub OAuth 데모');">GitHub로 계속</button>
+      </div>
 
-          <p class="helper">처음이신가요? <a class="link" href="#" onclick="event.preventDefault(); alert('회원가입: 라우팅 미연결 데모입니다.');">계정 만들기</a></p>
-        </form>
-
-        <p class="footer">이 페이지는 학습/포트폴리오용 디스코드 스타일 클론 UI입니다.</p>
-      </section>
-
-      <!-- 우측: QR 로그인 안내 영역 (모바일에서 숨김) -->
-      <aside class="right" aria-labelledby="qrTitle">
-        <div class="qr-card" aria-hidden="true">
-          <div class="qr" role="img" aria-label="QR 코드 자리표시자"></div>
-        </div>
-        <h2 id="qrTitle" class="qr-title">QR 코드로 로그인</h2>
-        <p class="qr-desc">모바일 앱으로 스캔하면<br/>빠르게 로그인할 수 있어요.</p>
-      </aside>
-    </main>
-  </div>
+      <p class="helper">처음이신가요? <a class="link" href="#" onclick="event.preventDefault(); alert('회원가입 데모입니다.');">계정 만들기</a></p>
+    </form>
+  </main>
 
   <script>
-    // ---- 비밀번호 표시 토글 ----
-    const pw = document.getElementById('password');
-    const toggle = document.getElementById('togglePw');
-    toggle.addEventListener('click', () => {
-      const isPwd = pw.type === 'password';
-      pw.type = isPwd ? 'text' : 'password';
-      toggle.textContent = isPwd ? '숨기기' : '보기';
-      pw.focus();
-    });
-
-    // ---- 간단한 클라이언트 검증 (과제/데모 수준) ----
     const form = document.getElementById('loginForm');
     const email = document.getElementById('email');
+    const pw = document.getElementById('password');
     const emailError = document.getElementById('emailError');
-    const passwordError = document.getElementById('passwordError');
+    const pwError = document.getElementById('passwordError');
 
-    function validateEmail(v){
-      // 매우 단순한 이메일 패턴 (실서비스는 더 견고한 검증 필요)
-      return /.+@.+\..+/.test(v);
-    }
-
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', (e)=>{
       e.preventDefault();
-
-      // 초기화
       emailError.textContent = '';
-      passwordError.textContent = '';
+      pwError.textContent = '';
 
-      // 필수값 체크
-      let ok = true;
-      if(!validateEmail(email.value.trim())){
+      if(!/.+@.+\..+/.test(email.value)){
         emailError.textContent = '이메일 형식을 확인해주세요.';
-        ok = false;
+        return;
       }
       if(pw.value.trim().length < 6){
-        passwordError.textContent = '비밀번호는 6자 이상이어야 합니다.';
-        ok = false;
+        pwError.textContent = '비밀번호는 6자 이상이어야 합니다.';
+        return;
       }
-
-      if(!ok) return;
-
-      // 데모: 제출 성공 시 알림 (실서비스는 fetch/axios로 서버 요청)
-      const remember = document.getElementById('remember').checked;
-      alert(`로그인 시도\n이메일: ${email.value}\n기억하기: ${remember ? '예' : '아니오'}`);
-    });
-
-    // ---- 접근성: Tab으로 올바른 포커스 링 제공 ----
-    window.addEventListener('keydown', (ev)=>{
-      if(ev.key === 'Tab'){
-        document.documentElement.classList.add('using-keyboard');
-      }
+      alert(`로그인 시도: ${email.value}`);
     });
   </script>
 </body>
