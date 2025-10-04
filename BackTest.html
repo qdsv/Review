@@ -279,35 +279,21 @@
         </div>
     </div>
 
-   <script>
+ <script>
     // --- 기본 설정 ---
-    // 백엔드 서버의 API 기본 주소를 상수로 저장합니다.
-    // 나중에 서버 주소가 바뀌면 이 부분만 수정하면 되어서 편리합니다.
     const API_URL = 'http://localhost:3000/api/diaries';
-
-    // 페이지가 처음 로드될 때 날짜 입력창의 기본값을 오늘 날짜로 설정합니다.
     document.getElementById("dt").valueAsDate = new Date();
-    
-    // 사용자가 클릭한 별점(rating)을 저장하기 위한 변수입니다.
-    // 아무것도 선택하지 않았을 때의 기본값은 0입니다.
     let selectedRating = 0;
 
     // --- 이벤트 리스너 설정 ---
-    // 'DOMContentLoaded'는 웹 브라우저가 HTML 문서를 전부 읽고解析한 후 발생하는 이벤트입니다.
-    // 즉, 페이지가 준비되자마자 fetchDiaries 함수를 실행해서 서버로부터 데이터를 불러옵니다.
     document.addEventListener('DOMContentLoaded', fetchDiaries);
-
-    // 'diary-form'이라는 id를 가진 폼(form)에서 'submit' 이벤트(추가하기 버튼 클릭)가 발생했을 때,
-    // handleFormSubmit 함수를 실행하도록 연결합니다.
     document.getElementById("diary-form").addEventListener("submit", handleFormSubmit);
-
-    // 별점(star)으로 사용되는 모든 span 태그들을 찾아서 각각 클릭 이벤트를 설정합니다.
-    document.querySelectorAll(".star").forEach(star => {
+    
+    // 폼 내부의 별점에 대한 클릭 이벤트 설정
+    document.querySelectorAll("#diary-form .star").forEach(star => {
         star.addEventListener("click", function () {
-            // 클릭된 별의 data-rating 값을 가져와서 selectedRating 변수에 저장합니다.
             selectedRating = parseInt(this.dataset.rating);
-            // 화면에 보이는 별 모양을 업데이트합니다. (예: 3점을 누르면 별 3개가 채워짐)
-            updateStarDisplay();
+            updateStarDisplay(selectedRating, "#diary-form"); // 폼의 별점 UI 업데이트
         });
     });
 
@@ -316,46 +302,32 @@
     // 1. 서버에서 모든 다이어리 기록을 가져와서 화면에 그리는 함수
     async function fetchDiaries() {
         try {
-            // fetch 함수를 사용해 API_URL에 GET 요청을 보냅니다.
-            // await는 서버의 응답이 올 때까지 기다리게 합니다.
             const response = await fetch(API_URL);
-            // 서버가 보낸 JSON 형식의 응답 데이터를 실제 자바스크립트 객체 배열로 변환합니다.
             const diaries = await response.json();
 
             const diaryList = document.getElementById("diary-list");
             const emptyMessage = document.getElementById("empty");
-            
-            // 새로운 목록을 그리기 전에 기존에 있던 목록을 깨끗하게 비웁니다.
             diaryList.innerHTML = ''; 
 
             if (diaries.length === 0) {
-                // 받아온 데이터가 하나도 없으면 "기록된 콘텐츠가 없어요!" 메시지를 보여줍니다.
                 emptyMessage.style.display = "block";
             } else {
-                // 데이터가 있으면 메시지를 숨깁니다.
                 emptyMessage.style.display = "none";
-                // diaries 배열의 각 항목(diary)에 대해 반복 실행합니다.
                 diaries.forEach(diary => {
-                    // 각 다이어리 데이터로 HTML 요소를 생성합니다.
                     const diaryElement = createDiaryElement(diary);
-                    // 생성된 HTML 요소를 화면의 목록(diaryList)에 추가합니다.
                     diaryList.appendChild(diaryElement);
                 });
             }
-            // 목록을 그린 후, 통계를 다시 계산해서 화면에 업데이트합니다.
             updateStats(diaries);
         } catch (error) {
-            // fetch 과정에서 네트워크 오류 등이 발생하면 콘솔에 에러를 출력합니다.
             console.error('데이터를 불러오는 중 오류 발생:', error);
         }
     }
 
-    // 2. 폼 제출(다이어리 추가) 시 실행될 함수
+    // 2. 폼 제출 시 실행될 함수
     async function handleFormSubmit(e) {
-        // e.preventDefault()는 폼 제출 시 발생하는 페이지 새로고침 현상을 막습니다.
         e.preventDefault();
 
-        // 폼 입력 요소들로부터 값을 읽어와서 서버로 보낼 객체(newDiary)를 만듭니다.
         const newDiary = {
             title: document.querySelector("input[type='text']").value,
             type: document.querySelector("select").options[
@@ -366,52 +338,54 @@
             memo: document.querySelector("textarea").value
         };
 
-        // 필수 항목들이 모두 입력되었는지 확인합니다.
         if (!newDiary.title || !newDiary.type || !newDiary.date || newDiary.rating === 0) {
             alert("제목, 종류, 날짜, 평점을 모두 입력해주세요.");
-            return; // 함수 실행을 중단합니다.
+            return;
         }
 
         try {
-            // API_URL에 POST 방식으로 newDiary 객체를 서버로 전송합니다.
             await fetch(API_URL, {
-                method: 'POST', // 요청 방식은 POST
-                headers: { 'Content-Type': 'application/json' }, // 보내는 데이터의 형식은 JSON
-                body: JSON.stringify(newDiary) // 자바스크립트 객체를 JSON 문자열로 변환
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newDiary)
             });
-            // 데이터 저장이 성공하면, 목록을 다시 불러와 화면을 최신 상태로 업데이트합니다.
-            fetchDiaries();
-            // 입력 폼의 내용을 모두 초기화합니다.
-            resetForm();
+            fetchDiaries(); 
+            resetForm(); 
         } catch (error) {
             console.error('데이터 저장 중 오류 발생:', error);
         }
     }
 
-    // 3. 다이어리 데이터 하나를 받아 HTML 요소를 생성하는 함수
+    // 3. 다이어리 HTML 요소를 생성하는 함수
     function createDiaryElement(diary) {
         const main = document.createElement("div");
         main.className = "fx3";
-        // diary 객체의 정보를 사용해 innerHTML로 내부 구조를 만듭니다.
-        // toLocaleDateString()은 날짜 형식을 'YYYY. MM. DD.'와 같이 보기 좋게 바꿔줍니다.
+        // 각 다이어리 항목에 고유 ID를 부여하여 별점 표시를 구분합니다.
+        const elementId = `diary-${diary._id}`;
         main.innerHTML = `
             <div>
                 <strong>${diary.type}</strong> ${diary.title} (${new Date(diary.date).toLocaleDateString()})<br>
-                평점: ${"★".repeat(diary.rating)}${"☆".repeat(5 - diary.rating)}<br>
+                <div id="${elementId}" class="star-rating-display">
+                    평점: 
+                    <span class="star">☆</span>
+                    <span class="star">☆</span>
+                    <span class="star">☆</span>
+                    <span class="star">☆</span>
+                    <span class="star">☆</span>
+                </div>
                 메모: ${diary.memo || "(없음)"}
             </div>
             <button class="delete-btn">🗑️</button>
         `;
         
-        // 방금 만든 요소 안에서 삭제 버튼을 찾아 클릭 이벤트를 추가합니다.
+        // ⭐️ 수정된 부분: 생성된 요소의 별점 UI를 즉시 업데이트
+        updateStarDisplay(diary.rating, `#${elementId}`);
+
         main.querySelector(".delete-btn").addEventListener("click", async () => {
             if (confirm('정말로 이 기록을 삭제하시겠습니까?')) {
                 try {
-                    // 삭제 API 주소(${API_URL}/${diary._id})에 DELETE 요청을 보냅니다.
-                    // diary._id는 MongoDB가 각 데이터에 부여한 고유 ID입니다.
                     await fetch(`${API_URL}/${diary._id}`, { method: 'DELETE' });
-                    // 삭제 성공 후, 목록을 다시 불러와 화면을 업데이트합니다.
-                    fetchDiaries();
+                    fetchDiaries(); 
                 } catch (error) {
                     console.error('데이터 삭제 중 오류 발생:', error);
                 }
@@ -420,30 +394,65 @@
 
         main.style.padding = "1rem";
         main.style.background = "white";
-        // ... (이하 스타일링 코드)
+        main.style.marginBottom = "1rem";
+        main.style.borderRadius = "0.7rem";
+        main.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
         
-        return main; // 완성된 HTML 요소를 반환합니다.
+        return main;
     }
 
     // 4. 입력 폼을 초기화하는 함수
     function resetForm() {
-        document.querySelector("input[type='text']").value = "";
-        document.querySelector("select").value = "";
+        document.getElementById("diary-form").reset();
         document.querySelector("input[type='date']").valueAsDate = new Date();
-        document.querySelector("textarea").value = "";
         selectedRating = 0;
-        updateStarDisplay();
+        updateStarDisplay(selectedRating, "#diary-form");
     }
     
-    // (기존 함수들: updateStarDisplay, updateStats)
-    // 별점 표시를 업데이트하는 함수
-    function updateStarDisplay() {
-        // ...
+    // ⭐️ 수정된 부분: 특정 영역의 별점 UI를 업데이트하도록 변경
+    function updateStarDisplay(rating, parentSelector) {
+        const parentElement = document.querySelector(parentSelector);
+        if (parentElement) {
+            const stars = parentElement.querySelectorAll(".star");
+            stars.forEach((star, index) => {
+                star.textContent = index < rating ? "★" : "☆";
+            });
+
+            // 입력 폼의 평점 텍스트만 업데이트
+            if (parentSelector === "#diary-form") {
+                const ratingText = document.getElementById("rating-text");
+                ratingText.textContent = rating > 0 ? `(${rating}점)` : "(평점을 선택하세요)";
+            }
+        }
     }
 
     // 통계 정보를 계산하고 업데이트하는 함수
     function updateStats(diaries) {
-        // ...
+        // ... (이 부분은 변경 없음)
+        const total = diaries.length;
+        let totalScore = 0;
+        let monthCount = 0;
+        const genreCount = {};
+
+        const thisMonth = new Date().getMonth();
+        const thisYear = new Date().getFullYear();
+
+        diaries.forEach(item => {
+            totalScore += item.rating;
+            const writtenDate = new Date(item.date);
+            if (writtenDate.getFullYear() === thisYear && writtenDate.getMonth() === thisMonth) {
+                monthCount++;
+            }
+            genreCount[item.type] = (genreCount[item.type] || 0) + 1;
+        });
+
+        const avg = total ? (totalScore / total).toFixed(1) : "0.0";
+        const favoriteGenre = Object.entries(genreCount).sort((a, b) => b[1] - a[1])[0]?.[0] || "-";
+
+        document.querySelector(".page-box1 .page-box2:nth-child(1) .num").textContent = total;
+        document.querySelector(".page-box1 .page-box2:nth-child(2) .num").textContent = avg;
+        document.querySelector(".page-box1 .page-box2:nth-child(3) .num").textContent = monthCount;
+        document.querySelector(".page-box1 .page-box2:nth-child(4) .num").textContent = favoriteGenre;
     }
 </script>
 </body>
