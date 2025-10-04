@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 나의 콘텐츠 다이어리</title>
+  <style>
+    /* =========================
+       Naver Blog-like Theme
+       (JS 전혀 변경 없음)
+       ========================= */
+    :root{
+      --nbg:#03C75A;         /* Naver Green */
+      --nbg-dark:#02a64e;
+      --bg:#f5f6f7;
+      --text:#222;
+      --muted:#666;
+      --line:#e5e8eb;
+      --card:#fff;
+      --radius:14px;
+      --shadow:0 8px 20px rgba(0,0,0,.06);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family: "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ---------- Top Header (Naver style) ---------- */
+    .nb-header{
+      background:#fff;
+      border-bottom:1px solid var(--line);
+    }
+    .nb-header-inner{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nb-logo{
+      display:flex;align-items:center;gap:10px;
+      font-weight:800;font-size:18px;color:var(--text);
+      text-decoration:none;
+    }
+    .nb-logo-badge{
+      width:24px;height:24px;border-radius:6px;background:var(--nbg);
+      display:grid;place-items:center;color:#fff;font-weight:900;
+    }
+    .nb-search{
+      margin-left:auto;
+      display:flex;align-items:center;gap:0;
+      background:#fff;border:1px solid var(--line);
+      border-radius:999px;overflow:hidden;
+    }
+    .nb-search input{
+      border:0;outline:0;padding:10px 12px;min-width:260px;background:#fff;
+    }
+    .nb-search button{
+      background:var(--nbg);color:#fff;border:0;padding:10px 14px;cursor:pointer;font-weight:700;
+    }
+    .nb-search button:hover{ background:var(--nbg-dark);}
+
+    /* ---------- Page Layout (sidebar + content) ---------- */
+    .nb-wrap{
+      max-width:1100px;margin:20px auto;display:flex;gap:22px;padding:0 16px;
+    }
+    .nb-side{
+      width:280px;flex:0 0 280px;display:flex;flex-direction:column;gap:16px;
+    }
+    .nb-card{
+      background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .nb-card .nb-card-h{
+      padding:14px 16px;border-bottom:1px solid var(--line);font-weight:800;
+      background:#fafbfc;
+    }
+    .nb-card .nb-card-c{
+      padding:16px;
+    }
+
+    .nb-profile{
+      display:flex;align-items:center;gap:12px;
+    }
+    .nb-avatar{
+      width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#e9f9ef,#d4ffe7);display:grid;place-items:center;font-weight:900;color:var(--nbg);
+      border:1px solid #d8f3e5;
+    }
+    .nb-nickname{font-weight:800}
+    .nb-desc{color:var(--muted);font-size:12px;margin-top:2px}
+
+    .nb-cat ul{list-style:none;display:grid;gap:8px}
+    .nb-cat a{
+      display:flex;justify-content:space-between;align-items:center;
+      text-decoration:none;color:var(--text);padding:8px 10px;border-radius:8px;
+    }
+    .nb-cat a:hover{background:#f2f4f6}
+
+    /* ---------- MAIN content (uses your original IDs) ---------- */
+    #page-wrapper1{
+      flex:1;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:0; /* 헤더/바디 분리 */
+      overflow:hidden;
+    }
+    .post-header{
+      padding:18px 20px;border-bottom:1px solid var(--line);background:#fff;
+      display:flex;align-items:center;gap:8px;
+    }
+    .post-header .badge{
+      background:var(--nbg);color:#fff;font-weight:800;padding:6px 10px;border-radius:999px;font-size:12px;
+    }
+    #page-wrapper1 h1{
+      font-size:22px;margin:0;color:#111;
+    }
+    .post-body{
+      padding:18px 20px 6px 20px;
+      background:linear-gradient(#fff,#fff) padding-box,
+                 radial-gradient(1200px 400px at -10% -50%, rgba(3,199,90,.08), transparent 60%) border-box;
+    }
+
+    /* 당신의 원래 섹션들(쓰는 폼/통계) 박스화 */
+    #page-wrapper2{
+      max-width: 100%;
+      margin: 0 0 16px 0;
+      padding: 16px 16px 18px 16px;
+      background: #fcfffd;
+      border: 1px solid #dff3e8;
+      border-radius: 10px;
+    }
+    #page-wrapper3{
+      max-width: 100%;
+      margin: 0 0 16px 0;
+      padding: 16px;
+      background: #f8fafc;
+      border-radius: 10px;
+      border:1px solid var(--line);
+    }
+
+    /* 폼 라인(네이버 입력폼 느낌) */
+    .fx, .fx2{
+      display:flex; align-items:center; gap:14px; margin-bottom:12px;
+    }
+    .fx label, .fx2 label, .label-like{
+      min-width:70px; color:#333; font-weight:700;
+    }
+    .fx input, .fx select, .fx textarea{
+      flex:1;
+      font-size: 14px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:#fff;
+      outline: none;
+    }
+    .fx input:focus, .fx select:focus, .fx textarea:focus{
+      border-color: var(--nbg);
+      box-shadow: 0 0 0 3px rgba(3,199,90,.15);
+    }
+
+    /* 추가 버튼을 네이버 톤으로 */
+    #plus{
+      font-size: 15px;
+      color: #fff;
+      background: var(--nbg);
+      width: 100%;
+      margin-top: 10px;
+      border: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform .06s ease, filter .2s;
+    }
+    #plus:hover{ filter:brightness(1.03); }
+    #plus:active{ transform: translateY(1px); }
+
+    /* 통계 카드 */
+    .page-box1{
+      display:grid;grid-template-columns: repeat(4, minmax(120px,1fr));
+      gap:12px;text-align:center;
+    }
+    .page-box2{
+      background:#fff;border:1px solid var(--line);border-radius:10px;
+      padding:14px; box-shadow: var(--shadow);
+    }
+    .num{ font-size: 22px; font-weight:800; color:#111;}
+    .num-text{ color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+    /* 필터 버튼(네이버 pill 스타일) */
+    #btn-all{
+      text-align:left; padding: 0 20px 14px 20px;
+    }
+    .btn{
+      background:#fff;color:#111;border:1px solid var(--line);
+      padding:8px 12px;border-radius:999px;cursor:pointer;margin:0 6px 8px 0;
+      transition: background .2s, color .2s, border-color .2s;
+      font-weight:700;font-size:13px;
+    }
+    .btn.frist, .btn:hover{
+      background:#e9f7f0;border-color:#bdebd3;color:#0e6b3d;
+    }
+
+    #line{
+      color:#111;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line);
+    }
+
+    /* 목록 아이템 카드 */
+    #diary-list .fx3{
+      display:flex;justify-content:space-between;gap:12px;
+      background:#fff;border:1px solid var(--line);
+      border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow);
+    }
+    .delete-btn{
+      background:#fff;border:1px solid var(--line);border-radius:8px;
+      font-size:16px;cursor:pointer;padding:6px 10px;
+    }
+    .delete-btn:hover{ background:#fff7f7;border-color:#ffdede }
+
+    /* 별점 */
+    .star{cursor:pointer;font-size:20px;}
+    #rating-text{margin-left:8px;color:var(--muted);}
+
+    /* 반응형 */
+    @media (max-width: 1024px){
+      .nb-wrap{flex-direction:column}
+      .nb-side{width:100%;flex:0 0 auto;order:2}
+      #page-wrapper1{order:1}
+      .nb-search input{min-width:180px}
+      .page-box1{grid-template-columns: repeat(2, minmax(140px,1fr));}
+    }
+    @media (max-width: 560px){
+      .fx, .fx2{flex-direction:column;align-items:stretch}
+      .nb-search input{min-width:120px}
+      .page-box1{grid-template-columns: 1fr 1fr;}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 상단 헤더 -->
+  <header class="nb-header">
+    <div class="nb-header-inner">
+      <a class="nb-logo" href="#">
+        <span class="nb-logo-badge">N</span>
+        <span>블로그</span>
+      </a>
+      <form class="nb-search" onsubmit="event.preventDefault()">
+        <input type="search" placeholder="내 다이어리 검색 (데모)">
+        <button type="submit">검색</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="nb-wrap">
+    <!-- 좌측 사이드 위젯 -->
+    <aside class="nb-side">
+      <section class="nb-card">
+        <div class="nb-card-h">프로필</div>
+        <div class="nb-card-c">
+          <div class="nb-profile">
+            <div class="nb-avatar">N</div>
+            <div>
+              <div class="nb-nickname">노아의 다이어리</div>
+              <div class="nb-desc">콘텐츠 수집가 • 기록러</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="nb-card nb-cat">
+        <div class="nb-card-h">카테고리</div>
+        <div class="nb-card-c">
+          <ul>
+            <li><a href="#">전체 <span>—</span></a></li>
+            <li><a href="#">🎬 영화 <span>—</span></a></li>
+            <li><a href="#">📺 드라마 <span>—</span></a></li>
+            <li><a href="#">📱 웹툰 <span>—</span></a></li>
+            <li><a href="#">📖 책 <span>—</span></a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="nb-card">
+        <div class="nb-card-h">공지</div>
+        <div class="nb-card-c" style="color:var(--muted);font-size:14px;">
+          이 블로그는 개인 기록 용도로 운영됩니다 :)
+        </div>
+      </section>
+    </aside>
+
+    <!-- 우측 메인: (당신의 기존 마크업 유지, JS 셀렉터 모두 동일) -->
+    <div id="page-wrapper1">
+      <div class="post-header">
+        <span class="badge">글쓰기</span>
+        <h1>📚 나의 콘텐츠 다이어리</h1>
+      </div>
+
+      <div class="post-body">
+        <div id="page-wrapper2">
+          <form id="diary-form">
+            <div class="fx">
+              <div class="label-like">제목</div>
+              <input type="text" placeholder="영화, 드라마, 웹툰 ,책 제목을 입력하세요" required>
+            </div>
+
+            <div class="fx">
+              <div class="label-like">종류</div>
+              <select required>
+                <option value="">선택하세요</option>
+                <option value="movie">🎬 영화</option>
+                <option value="drama">📺 드라마</option>
+                <option value="webtoon">📱 웹툰</option>
+                <option value="book">📖 책</option>
+              </select>
+            </div>
+
+            <div class="fx">
+              <div class="label-like">날짜</div>
+              <input type="date" id="dt" required>
+            </div>
+
+            <div class="fx2">
+              <div class="label-like">평점</div>
+              <div class="star-rating">
+                <span class="star" data-rating="1">☆</span>
+                <span class="star" data-rating="2">☆</span>
+                <span class="star" data-rating="3">☆</span>
+                <span class="star" data-rating="4">☆</span>
+                <span class="star" data-rating="5">☆</span>
+                <span id="rating-text">(평점을 선택하세요)</span>
+              </div>
+            </div>
+
+            <div class="fx">
+              <div class="label-like">메모</div>
+              <textarea placeholder="감상평이나 기억하고 싶은 내용을 적어보세요..." style="height: 3rem;"></textarea>
+            </div>
+
+            <input type="submit" id="plus" value="📝 다이어리 추가하기">
+          </form>
+        </div>
+
+        <div id="page-wrapper3">
+          <h3 style="text-align:center; margin-bottom: 1.2rem;">📊 나의 콘텐츠 통계</h3>
+          <div class="page-box1">
+            <div class="page-box2">
+              <div class="num">0</div>
+              <div class="num-text">총 개수</div>
+            </div>
+            <div class="page-box2">
+              <div class="num">0.0</div>
+              <div class="num-text">평균 평점</div>
+            </div>
+            <div class="page-box2">
+              <div class="num">0</div>
+              <div class="num-text">이번 달</div>
+            </div>
+            <div class="page-box2">
+              <div class="num">-</div>
+              <div class="num-text">최애 장르</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="btn-all">
+          <button class="btn frist">전체</button>
+          <button class="btn">🎬 영화</button>
+          <button class="btn">📺 드라마</button>
+          <button class="btn">📱 웹툰</button>
+          <button class="btn">📖 책</button>
+        </div>
+
+        <div style="margin: 0 20px 20px 20px;">
+          <h3 id="line">📖 내가 본 콘텐츠들</h3>
+          <div id="empty" style="text-align:center; font-size: 14px;">
+            <div style="font-size: 42px;">📝</div>
+            <p>아직 기록된 콘텐츠가 없어요!</p>
+            <p>위에서 첫 번째 다이어리를 작성해보세요 😊</p>
+          </div>
+          <div id="diary-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================
+       JS (원본 그대로)
+       ======================= -->
+  <script>
+    document.getElementById("dt").valueAsDate = new Date();
+
+    let selectedRating = 0;
+
+    const stars = document.querySelectorAll(".star");
+
+    stars.forEach(star => {
+        star.addEventListener("click", function () {
+            selectedRating = parseInt(this.dataset.rating);
+            updateStarDisplay();
+        });
+    });
+
+    function updateStarDisplay() {
+        const ratingText = document.getElementById("rating-text");
+
+        stars.forEach((star, index) => {
+            if (index < selectedRating) {
+                star.textContent = "★";
+            } 
+            else {
+                star.textContent = "☆";
+            }
+        });
+
+        ratingText.textContent = selectedRating > 0
+            ? `(${selectedRating}점)`
+            : "(평점을 선택하세요)";
+    }
+
+    function diary(e){
+        e.preventDefault();
+
+        const title = document.querySelector("input[type='text']").value;
+        const typeText = document.querySelector("select").options[
+            document.querySelector("select").selectedIndex
+        ].text;
+        const date = document.querySelector("input[type='date']").value;
+        const memo = document.querySelector("textarea").value;
+
+        if (!title || !typeText || !date || selectedRating === 0) {
+            alert("평점을 입력해주세요")
+            return;
+        }
+
+        const diaryList = document.getElementById("diary-list");
+        const emptyMessage = document.getElementById("empty");
+
+        if (emptyMessage && diaryList.children.length === 0) {
+            emptyMessage.style.display = "none";
+        }
+        
+        const container = document.getElementById("diary-list");
+
+        const main = document.createElement("div");
+        main.className = "fx3";
+        main.setAttribute("data-name", typeText);
+        main.innerHTML = `
+            <div>
+                <strong>${typeText}</strong> ${title} (${date})<br>
+                평점: ${"★".repeat(selectedRating)}${"☆".repeat(5 - selectedRating)}<br>
+                메모: ${memo || "(없음)"}
+            </div>
+            <button class="delete-btn">🗑️</button>
+        `;
+
+        main.style.padding = "1rem";
+        main.style.background = "white";
+        main.style.marginBottom = "1rem";
+        main.style.borderRadius = "0.7rem";
+        main.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+        
+        const deleteBtn = main.querySelector(".delete-btn");
+        deleteBtn.addEventListener("click", () => {
+            main.remove();
+
+            if (diaryList.children.length === 0) {
+                emptyMessage.style.display = "block";
+            }
+
+            updateStats();
+        });
+
+        container.appendChild(main);
+
+        document.querySelector("input[type='text']").value = "";
+        document.querySelector("select").value = "";
+        document.querySelector("input[type='date']").valueAsDate = new Date();
+        document.querySelector("textarea").value = "";
+        selectedRating = 0;
+        updateStarDisplay();
+        updateStats();
+    }
+
+    document.getElementById("diary-form").addEventListener("submit", diary);
+
+    const buttons = document.querySelectorAll("#btn-all .btn");
+
+    buttons.forEach(button => {
+        button.addEventListener("click", () => {
+            const category = button.textContent;
+            const diaryAll = document.querySelectorAll("#diary-list .fx3");
+
+            buttons.forEach(btn => btn.classList.remove("frist"));
+            button.classList.add("frist");
+
+            diaryAll.forEach(data => {
+                const dataName = data.getAttribute("data-name");
+
+                if (category === "전체" || dataName === category) {
+                    data.style.display = "flex";
+                } 
+                else {
+                    data.style.display = "none";
+                }
+            });
+        });
+    });
+
+    function updateStats() {
+        const diaryAll = document.querySelectorAll("#diary-list .fx3");
+        const total = diaryAll.length;
+
+        let totalScore = 0;
+        let monthCount = 0;
+        const genreCount = {};
+
+        const today = new Date();
+        const thisMonth = today.getMonth();
+        const thisYear = today.getFullYear();
+
+        diaryAll.forEach(item => {
+            const text = item.innerText;
+            const dateMatch = text.match(/\((\d{4}-\d{2}-\d{2})\)/);
+            const stars = text.match(/★/g);
+            const genre = item.getAttribute("data-name");
+
+            if (dateMatch && stars) {
+                const writtenDate = new Date(dateMatch[1]);
+                totalScore += stars.length;
+
+                if (writtenDate.getFullYear() === thisYear && writtenDate.getMonth() === thisMonth) {
+                    monthCount++;
+                }
+
+                if (genre) {
+                    genreCount[genre] = (genreCount[genre] || 0) + 1;
+                }
+            }
+        });
+
+        const avg = total ? (totalScore / total).toFixed(1) : "0.0";
+        const favoriteGenre = Object.entries(genreCount).sort((a, b) => b[1] - a[1])[0]?.[0] || "-";
+
+        document.querySelector(".page-box1 .page-box2:nth-child(1) .num").textContent = total;
+        document.querySelector(".page-box1 .page-box2:nth-child(2) .num").textContent = avg;
+        document.querySelector(".page-box1 .page-box2:nth-child(3) .num").textContent = monthCount;
+        document.querySelector(".page-box1 .page-box2:nth-child(4) .num").textContent = favoriteGenre;
+    }
+  </script>
+</body>
+</html>
