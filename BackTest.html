@@ -5,36 +5,200 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📚 나의 콘텐츠 다이어리</title>
     <style>
-        *{ margin: 0; padding: 0; }
-        body{ font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 1rem; }
-        #page-wrapper1{ max-width: 53.7rem; margin: 1rem auto; padding: 0.6rem; background: white; border-radius: 1.2rem; box-shadow: 0px 2px 6px rgba(100, 100, 100, 0.3); }
-        #page-wrapper2{ max-width: 48rem; margin: 2rem auto; padding: 1.5rem; background: #f8f9fa; border: 0.17rem solid #e9ecef; border-radius: 1rem; }
-        #page-wrapper3{ max-width: 48rem; margin: 1.5rem auto; padding: 1.6rem; background: #e3f2fd; border: none; border-radius: 0.7rem; }
-        h1{ text-align: center; font-size: 2.5rem; margin-top: 1.5rem; }
-        .fx{ display: flex; align-items: center; gap: 1.7rem; }
-        .fx2{ display: flex; align-items: center; }
-        .fx, .fx2{ margin-bottom: 1rem; }
-        .fx input, .fx select, .fx textarea{ flex: 1; font-size: 1rem; padding: 0.8rem; border: 0.15rem solid #dee2e6; border-radius: 0.5rem; }
-        #plus{ font-size: 1rem; color: white; background: linear-gradient(45deg, #667eea, #764ba2); width: 100%; margin-top: 0.9rem; border: none; padding: 0.8rem; border-radius: 2rem; cursor: pointer; transition: all 0.3s ease; }
-        #plus:hover{ transform: translateY(-2px); box-shadow: 0 0.01rem 1.5rem rgba(102, 126, 234, 0.4); }
-        .page-box1{ display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; text-align: center; }
-        .page-box2{ background-color: white; padding: 1rem; border-radius: 0.5rem; box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.1); }
-        .num{ font-size: 2rem; font-weight: bold; color: #667eea }
-        .num-text{ color: #666; font-size: 0.9rem; margin-top: 0.2rem; }
-        #btn-all{ text-align: center; margin-bottom: 1.5rem; }
-        .btn.frist, .btn:hover{ background-color: #667eea; color: white; }
-        .btn{ background-color: white; color: #667eea; border: 0.15rem solid #667eea; padding: 0.4rem 0.8rem; border-radius: 2rem; cursor: pointer; margin: 0 0.3rem; transition: all 0.3s ease; }
-        .delete-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; padding: 0.2rem 0.4rem; margin-left: 0.5rem; }
-        #line{ color: #333; margin-bottom: 1rem; padding-bottom: 0.7rem; border-bottom: 0.15rem solid #f0f0f0; }
-        .star{ cursor: pointer; font-size: 1.3rem; }
-        .fx3{ display: flex; justify-content: space-between; align-items: center; }
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        body{
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        #page-wrapper1{
+            max-width: 53.7rem;
+            margin: 1rem auto;
+            padding: 0.6rem;
+            background: white;
+            border-radius: 1.2rem;
+            box-shadow: 0px 2px 6px rgba(100, 100, 100, 0.3);
+        }
+
+        #page-wrapper2{
+            max-width: 48rem;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border: 0.17rem solid #e9ecef;
+            border-radius: 1rem;
+        }
+
+        #page-wrapper3{
+            max-width: 48rem;
+            margin: 1.5rem auto;
+            padding: 1.6rem;
+            background: #e3f2fd;
+            border: none;
+            border-radius: 0.7rem;
+        }
+
+        h1{
+            text-align: center;
+            font-size: 2.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .fx{
+            display: flex;
+            align-items: center;
+            gap: 1.7rem;
+        }
+
+        .fx2{
+            display: flex;
+            align-items: center;
+        }
+
+        .fx, .fx2{
+            margin-bottom: 1rem;
+        }
+
+        .fx input, select, textarea{
+            flex: 1;
+            font-size: 1rem;
+            padding: 0.8rem;
+            border: 0.15rem solid #dee2e6;
+            border-radius: 0.5rem;
+        }
+
+        #plus{
+            font-size: 1rem;
+            color: white;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            width: 100%;
+            margin-top: 0.9rem;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #plus:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 0.01rem 1.5rem rgba(102, 126, 234, 0.4);
+        }
+
+        .page-box1{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .page-box2{
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.1);
+        }
+
+        .num{
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea
+        }
+
+        .num-text{
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+        }
+
+        #btn-all{
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn.frist, .btn:hover{
+            background-color: #667eea;
+            color: white;
+        }
+
+        .btn{
+            background-color: white;
+            color: #667eea;
+            border: 0.15rem solid #667eea;
+            padding: 0.4rem 0.8rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            margin: 0 0.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 0.2rem 0.4rem;
+            margin-left: 0.5rem;
+        }
+
+        #line{
+            color: #333;
+            margin-bottom: 1rem;
+            padding-bottom: 0.7rem;
+            border-bottom: 0.15rem solid #f0f0f0;
+        }
+
+        .star{
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
+
+        .fx3{
+                display: flex;
+                justify-content: space-between;
+            }
+
         @media (max-width: 768px) {
-            #page-wrapper1, #page-wrapper2, #page-wrapper3 { width: 95%; max-width: none;  padding: 1rem; margin: 1rem auto; box-sizing: border-box; }
-            h1 { font-size: 1.8rem; }
-            .fx { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-            .fx input, .fx select, .fx textarea { width: 100%; box-sizing: border-box; }
-            #btn-all .btn { margin-bottom: 0.5rem; }
-            .page-box1 { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+            #page-wrapper1,
+            #page-wrapper2,
+            #page-wrapper3 {
+                width: 95%;
+                max-width: none; 
+                padding: 1rem;
+                margin: 1rem auto;
+                box-sizing: border-box;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .fx {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .fx input,
+            .fx select,
+            .fx textarea {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            #btn-all .btn {
+                margin-bottom: 0.5rem;
+            }
+
+            .page-box1 {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
         }
     </style>
 </head>
