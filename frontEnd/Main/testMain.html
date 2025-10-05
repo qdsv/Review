@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="testMain.css"> 
+    <link rel="stylesheet" href="testMain.js">
+    <title>📚 나의 콘텐츠 다이어리</title>
+</head>
+<body>
+
+  <!-- 상단 헤더 -->
+  <header class="nb-header">
+    <div class="nb-header-inner">
+      <a class="nb-logo" href="#">
+        <span class="nb-logo-badge">N</span>
+        <span>블로그</span>
+      </a>
+      <form class="nb-search" onsubmit="event.preventDefault()">
+        <input type="search" placeholder="내 다이어리 검색 (데모)">
+        <button type="submit">검색</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="nb-wrap">
+    <!-- 좌측 사이드 위젯 -->
+    <aside class="nb-side">
+      <section class="nb-card">
+        <div class="nb-card-h">프로필</div>
+        <div class="nb-card-c">
+          <div class="nb-profile">
+            <div class="nb-avatar">N</div>
+            <div>
+              <div class="nb-nickname">노아의 다이어리</div>
+              <div class="nb-desc">콘텐츠 수집가 • 기록러</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="nb-card nb-cat">
+        <div class="nb-card-h">카테고리</div>
+        <div class="nb-card-c">
+          <ul>
+            <li><a href="#">전체 <span>—</span></a></li>
+            <li><a href="#">🎬 영화 <span>—</span></a></li>
+            <li><a href="#">📺 드라마 <span>—</span></a></li>
+            <li><a href="#">📱 웹툰 <span>—</span></a></li>
+            <li><a href="#">📖 책 <span>—</span></a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="nb-card">
+        <div class="nb-card-h">공지</div>
+        <div class="nb-card-c" style="color:var(--muted);font-size:14px;">
+          이 블로그는 개인 기록 용도로 운영됩니다 :)
+        </div>
+      </section>
+    </aside>
+
+    <!-- 우측 메인: (당신의 기존 마크업 유지, JS 셀렉터 모두 동일) -->
+    <div id="page-wrapper1">
+      <div class="post-header">
+        <span class="badge">글쓰기</span>
+        <h1>📚 나의 콘텐츠 다이어리</h1>
+      </div>
+
+      <div class="post-body">
+        <div id="page-wrapper2">
+          <form id="diary-form">
+            <div class="fx">
+              <div class="label-like">제목</div>
+              <input type="text" placeholder="영화, 드라마, 웹툰 ,책 제목을 입력하세요" required>
+            </div>
+
+            <div class="fx">
+              <div class="label-like">종류</div>
+              <select required>
+                <option value="">선택하세요</option>
+                <option value="movie">🎬 영화</option>
+                <option value="drama">📺 드라마</option>
+                <option value="webtoon">📱 웹툰</option>
+                <option value="book">📖 책</option>
+              </select>
+            </div>
+
+            <div class="fx">
+              <div class="label-like">날짜</div>
+              <input type="date" id="dt" required>
+            </div>
+
+            <div class="fx2">
+              <div class="label-like">평점</div>
+              <div class="star-rating">
+                <span class="star" data-rating="1">☆</span>
+                <span class="star" data-rating="2">☆</span>
+                <span class="star" data-rating="3">☆</span>
+                <span class="star" data-rating="4">☆</span>
+                <span class="star" data-rating="5">☆</span>
+                <span id="rating-text">(평점을 선택하세요)</span>
+              </div>
+            </div>
+
+            <div class="fx">
+              <div class="label-like">메모</div>
+              <textarea placeholder="감상평이나 기억하고 싶은 내용을 적어보세요..." style="height: 3rem;"></textarea>
+            </div>
+
+            <input type="submit" id="plus" value="📝 다이어리 추가하기">
+          </form>
+        </div>
+
+        <div id="page-wrapper3">
+          <h3 style="text-align:center; margin-bottom: 1.2rem;">📊 나의 콘텐츠 통계</h3>
+          <div class="page-box1">
+            <div class="page-box2">
+              <div class="num">0</div>
+              <div class="num-text">총 개수</div>
+            </div>
+            <div class="page-box2">
+              <div class="num">0.0</div>
+              <div class="num-text">평균 평점</div>
+            </div>
+            <div class="page-box2">
+              <div class="num">0</div>
+              <div class="num-text">이번 달</div>
+            </div>
+            <div class="page-box2">
+              <div class="num">-</div>
+              <div class="num-text">최애 장르</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="btn-all">
+          <button class="btn frist">전체</button>
+          <button class="btn">🎬 영화</button>
+          <button class="btn">📺 드라마</button>
+          <button class="btn">📱 웹툰</button>
+          <button class="btn">📖 책</button>
+        </div>
+
+        <div style="margin: 0 20px 20px 20px;">
+          <h3 id="line">📖 내가 본 콘텐츠들</h3>
+          <div id="empty" style="text-align:center; font-size: 14px;">
+            <div style="font-size: 42px;">📝</div>
+            <p>아직 기록된 콘텐츠가 없어요!</p>
+            <p>위에서 첫 번째 다이어리를 작성해보세요 😊</p>
+          </div>
+          <div id="diary-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

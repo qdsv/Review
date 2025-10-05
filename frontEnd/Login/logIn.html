@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reviewery • 로그인</title>
+
+  <style>
+    /* 고정 1rem=16px (시각 동일 유지) */
+    html { font-size: 16px; }
+
+    :root{
+      /* ===== Reviewery Neo-Minimal (Light + Aqua Teal) ===== */
+      --bg-2: #F6F7FA;
+      --bg-1: #FFFFFF;
+      --input: #F1F3F7;
+      --text: #171A1F;
+      --muted: #6B7380;
+      --focus: #00BFA6;
+      --focus-press: #00A890;
+      --danger: #E23D3D;
+      --ring: 0 0 0 0.1875rem rgba(0,191,166,.18); /* 3px */
+      --radius: 1rem;              /* 16px */
+      --line: #E4E7EE;
+      --elev: 0 0.625rem 1.75rem rgba(16,18,27,.08); /* 10px 28px */
+
+      /* 타입 스케일 (픽셀 시각 동일) */
+      --fs-xs: 0.78125rem;   /* 12.5px */
+      --fs-sm: 0.875rem;     /* 14px   */
+      --fs-md: 0.96875rem;   /* 15.5px */
+      --fs-lg: 1.125rem;     /* 18px   */
+      --fs-xl: 1.75rem;      /* 28px   */
+      --fs-xxl: 2rem;        /* 32px   */
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{ height: 100%; }
+    body{
+      margin: 0;
+      background:
+        radial-gradient(68.75rem 26.25rem at 100% -30%, rgba(0,191,166,.08), transparent 60%),
+        linear-gradient(#FAFBFF, var(--bg-2));
+      color: var(--text);
+      font: var(--fs-md)/1.5 "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem; /* 16px */
+    }
+
+    .card{
+      width: 100%;
+      max-width: 35rem; /* 560px */
+      background: var(--bg-1);
+      border-radius: var(--radius);
+      box-shadow: var(--elev);
+      padding: 2.125rem 1.875rem; /* 34px 30px */
+      display: flex;
+      flex-direction: column;
+      gap: 1.125rem;              /* 18px */
+      border: 1px solid var(--line);
+    }
+
+    /* ===== Brand Header (전 스타일 그대로) ===== */
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:1rem;                   /* 16px */
+      margin-bottom: 0.375rem;    /* 6px */
+    }
+    .logo{
+      flex:0 0 3.4375rem;         /* 55px */
+      inline-size: 3.4375rem;
+      block-size: 3.4375rem;
+      border-radius: 0.75rem;     /* 12px */
+      display:grid; place-items:center; user-select:none;
+      border: 0.09375rem solid var(--focus); /* 1.5px */
+      background:
+        linear-gradient(#fff,#fff) padding-box,
+        conic-gradient(from 140deg, rgba(0,191,166,.12), rgba(0,191,166,.28), rgba(0,191,166,.12)) border-box;
+      box-shadow: 0 0.375rem 1rem rgba(0,191,166,.12); /* 6px 16px */
+      margin-bottom: 0.8125rem;   /* 13px */
+    }
+    .logo svg{ inline-size: 1.625rem; block-size: 1.625rem; stroke: var(--focus); } /* 26px */
+
+    .brand-text{
+      display:flex; flex-direction:column; justify-content:center;
+      line-height:1; gap:0.625rem; /* 10px */
+    }
+    .title{
+      font-size: var(--fs-xl);      /* 28px */
+      font-weight: 900;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      color: var(--muted);
+      font-size: 0.9375rem;         /* 15px */
+      line-height: 1.45;
+      margin-top: 0.125rem;         /* 2px */
+    }
+
+    .form{
+      display: flex; flex-direction: column; gap: 1rem; margin-top: 0.375rem; /* 6px */
+    }
+    .field{ display: flex; flex-direction: column; gap: 0.5rem; } /* 8px */
+    label{ font-size: 0.8125rem; font-weight: 800; color: #2F3440; letter-spacing:.2px; } /* 13px */
+    .input{
+      background: var(--input);
+      border: 1px solid var(--line);
+      color: var(--text);
+      border-radius: 0.75rem;         /* 12px */
+      padding: 0.8125rem 0.875rem;    /* 13px 14px */
+      outline: none;
+      transition: box-shadow .15s, border-color .15s, background .15s;
+      font-size: var(--fs-md);
+    }
+    .input::placeholder{ color:#8A90A0; }
+    .input:focus{
+      border-color: var(--focus);
+      box-shadow: var(--ring);
+      background: #ECF4F3;
+    }
+
+    .row-between{
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 0.75rem; flex-wrap: wrap; /* 12px */
+    }
+
+    .link-row{ display:flex; align-items:center; gap:0.75rem; }
+    .checkbox{
+      display: inline-flex; align-items: center; gap: 0.5rem; color: var(--muted);
+      user-select: none; cursor: pointer; font-size: var(--fs-sm);
+    }
+    .checkbox input{ accent-color: var(--focus); }
+
+    .btn{
+      border: 0; border-radius: 0.75rem; padding: 0.8125rem 1rem; /* 13px 16px */
+      font-weight: 900;
+      background: var(--focus); color: #0D1413; cursor: pointer;
+      transition: transform .06s ease, filter .2s, background .2s;
+      letter-spacing:.2px; font-size: var(--fs-md);
+    }
+    .btn:active{ transform: translateY(0.0625rem); } /* 1px */
+    .btn:hover{ filter: brightness(1.03); background: var(--focus-press); }
+
+    .btn-secondary{
+      background: #fff; color: #2A2F3A; font-weight: 800;
+      border: 1px solid var(--line);
+      padding: 0.75rem 0.875rem;      /* 12px 14px */
+      border-radius: 0.75rem;         /* 12px */
+      font-size: var(--fs-sm);
+    }
+    .btn-secondary:hover{ background:#F9FAFC; }
+
+    .error{ color: var(--danger); font-size: var(--fs-xs); min-height: 1.125rem; } /* 12.5px, 18px */
+
+    .divider{
+      display: flex; align-items: center; justify-content: center; color: var(--muted);
+      font-weight:700; font-size: 0.8125rem; margin-top: 0.125rem; /* 13px, 2px */
+    }
+    .divider::before, .divider::after{
+      content: "";
+      flex:1; block-size: 0.0625rem; background: var(--line); margin: 0 0.5rem; /* 1px, 8px */
+    }
+
+    .oauth{ display: flex; flex-direction: column; gap: 0.625rem; } /* 10px */
+    .helper{ color: var(--muted); font-size: 0.8125rem; text-align: center; } /* 13px */
+    .link{ color: var(--focus); text-decoration: none; font-weight: 900; }
+    .link:hover{ text-decoration: underline; }
+
+    /* ======= Modal (아이디/비밀번호 찾기 공용) ======= */
+    .modal-backdrop{
+      position: fixed; inset:0; display:none; place-items:center;
+      background: rgba(16,18,27,.35); z-index: 50; padding: 1rem;
+    }
+    .modal{
+      width: 100%; max-width: 30rem; background: var(--bg-1); color: var(--text);
+      border:1px solid var(--line); border-radius: 0.875rem; /* 14px */
+      box-shadow: 0 1.5rem 3.75rem rgba(16,18,27,.15); /* 24px 60px */
+      overflow:hidden;
+    }
+    .modal-h{
+      padding:1rem 1.125rem; border-bottom:1px solid var(--line);
+      font-weight:900; display:flex; align-items:center; justify-content:space-between;
+      font-size: var(--fs-lg);
+    }
+    .modal-b{ padding:1.125rem; display:grid; gap:0.875rem; }
+    .modal-f{
+      padding:0.875rem 1.125rem; border-top:1px solid var(--line);
+      display:flex; gap:0.625rem; justify-content:flex-end;
+    }
+    .icon-btn{
+      border:0;background:transparent;color:#7B8294;cursor:pointer;font-weight:900; font-size: 1.125rem;
+    }
+    .btn-ghost{
+      background:#fff; color:#2A2F3A; border:1px solid var(--line);
+      padding:0.6875rem 0.875rem; border-radius:0.625rem; cursor:pointer; font-weight:900;
+    }
+    .btn-primary{
+      background: var(--focus); color:#0D1413; border:0;
+      padding:0.6875rem 0.875rem; border-radius:0.625rem; cursor:pointer; font-weight:900;
+    }
+    .modal .input{ background: #F5F7F9; border-color: var(--line); }
+    .modal small{ color: var(--muted); font-size: var(--fs-sm); }
+    .modal-backdrop.show{ display:grid; }
+
+    /* ========= Responsive only (스타일 동일, 작은 화면 최적화) ========= */
+    @media (min-width: 64rem){ /* ~1024px 이상: 소셜 버튼 가로 배치만 */
+      .oauth{ flex-direction: row; }
+      .oauth .btn-secondary{ flex:1; text-align:center; }
+    }
+    @media (max-width: 48rem){ /* ~768px 이하: 카드 패딩 살짝 축소 */
+      .card{ padding: 1.625rem 1.25rem; } /* 26px 20px */
+      .brand{ gap: 0.875rem; }
+      .brand-text{ gap: 0.5rem; }
+    }
+    @media (max-width: 30rem){ /* ~480px 이하: 모바일 작은 화면 */
+      body{ padding: 0.75rem; }
+      .card{ padding: 1.25rem 1rem; max-width: 100%; border-radius: 0.875rem; }
+      .row-between{ gap: 0.5rem; }
+      .link-row{ gap: 0.5rem; }
+      .oauth{ gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="loginTitle">
+    <div class="brand">
+      <div class="logo" title="Reviewery" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 4h10a1 1 0 0 1 1 1v14l-6-4-6 4V5a1 1 0 0 1 1-1z"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="title">Reviewery</div>
+        <p id="loginTitle" class="subtitle">기록하고, 다시 보고, 추천하는 나의 콘텐츠 아카이브</p>
+      </div>
+    </div>
+
+    <form class="form" id="loginForm" novalidate>
+      <div class="field">
+        <label for="email">이메일</label>
+        <input id="email" class="input" type="email" placeholder="이메일" autocomplete="username" required />
+        <div class="error" id="emailError" aria-live="polite"></div>
+      </div>
+
+      <div class="field">
+        <label for="password">비밀번호</label>
+        <input id="password" class="input" type="password" placeholder="비밀번호" autocomplete="current-password" required />
+        <div class="error" id="passwordError" aria-live="polite"></div>
+      </div>
+
+      <div class="row-between">
+        <label class="checkbox">
+          <input type="checkbox" id="remember" /> 로그인 상태 유지
+        </label>
+
+        <div class="link-row">
+          <a href="#" class="link" id="openFindId">아이디 찾기</a>
+          <span aria-hidden="true" style="opacity:.4;">|</span>
+          <a href="#" class="link" id="openFindPw">비밀번호 찾기</a>
+        </div>
+      </div>
+
+      <button class="btn" type="submit">로그인</button>
+
+      <div class="divider">또는</div>
+
+      <div class="oauth" aria-label="소셜 로그인">
+        <button class="btn btn-secondary" type="button" onclick="alert('Google OAuth: 데모 버튼입니다.');">Google 로그인</button>
+        <button class="btn btn-secondary" type="button" onclick="alert('GitHub OAuth: 데모 버튼입니다.');">Naver 로그인</button>
+      </div>
+
+      <p class="helper">처음이신가요? <a class="link" href="#" onclick="event.preventDefault(); alert('회원가입: 데모입니다.');">계정 만들기</a></p>
+    </form>
+  </main>
+
+  <!-- ===== 아이디 찾기 모달 ===== -->
+  <div class="modal-backdrop" id="modalFindId" aria-hidden="true">
+    <div class="modal" role="dialog" aria-labelledby="findIdTitle" aria-modal="true">
+      <div class="modal-h">
+        <div id="findIdTitle">아이디(이메일) 찾기</div>
+        <button class="icon-btn" aria-label="닫기" data-close="modalFindId">✕</button>
+      </div>
+      <div class="modal-b">
+        <div class="field">
+          <label for="findIdName">이름</label>
+          <input id="findIdName" class="input" type="text" placeholder="홍길동" />
+        </div>
+        <div class="field">
+          <label for="findIdPhone">가입 시 휴대전화</label>
+          <input id="findIdPhone" class="input" type="tel" placeholder="010-1234-5678" />
+          <small>※ 데모: 실제 조회 없이 안내만 표시합니다.</small>
+        </div>
+      </div>
+      <div class="modal-f">
+        <button class="btn-ghost" data-close="modalFindId">취소</button>
+        <button class="btn-primary" id="submitFindId">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 비밀번호 찾기 모달 ===== -->
+  <div class="modal-backdrop" id="modalFindPw" aria-hidden="true">
+    <div class="modal" role="dialog" aria-labelledby="findPwTitle" aria-modal="true">
+      <div class="modal-h">
+        <div id="findPwTitle">비밀번호 찾기</div>
+        <button class="icon-btn" aria-label="닫기" data-close="modalFindPw">✕</button>
+      </div>
+        <div class="modal-b">
+          <div class="field">
+            <label for="findPwEmail">가입 이메일</label>
+            <input id="findPwEmail" class="input" type="email" placeholder="name@example.com" />
+          </div>
+          <small>※ 데모: 실제 메일 발송 없이 안내만 표시합니다.</small>
+        </div>
+      <div class="modal-f">
+        <button class="btn-ghost" data-close="modalFindPw">취소</button>
+        <button class="btn-primary" id="submitFindPw">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== 정규식 (요청사항) ===== */
+    const regexMail = /^([a-z]+\d*)+(\.?\w+)+@\w+(\.\w{2,3})+$/;
+    const regexId   = /^\w{8,20}$/;
+    const regexPw   = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+
+    /* ===== 기존 로그인 검증 로직 유지(정규식만 적용) ===== */
+    const form = document.getElementById('loginForm');
+    const email = document.getElementById('email');
+    const pw = document.getElementById('password');
+    const emailError = document.getElementById('emailError');
+    const pwError = document.getElementById('passwordError');
+
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      emailError.textContent = '';
+      pwError.textContent = '';
+
+      if(!regexMail.test(email.value.trim())){
+        emailError.textContent = '이메일 형식을 확인해주세요. (예: name@example.com)';
+        return;
+      }
+      if(!regexPw.test(pw.value.trim())){
+        pwError.textContent = '비밀번호는 8~20자, 영문 대/소문자, 숫자, 특수문자(@$!%*?&)를 모두 포함해야 합니다.';
+        return;
+      }
+      const remember = document.getElementById('remember').checked;
+      alert(`로그인 시도: ${email.value}\n기억하기: ${remember ? '예' : '아니오'}`);
+    });
+
+    /* ===== 모달 제어 공통 ===== */
+    function openModal(id){
+      const m = document.getElementById(id);
+      if(!m) return;
+      m.classList.add('show');
+      m.setAttribute('aria-hidden','false');
+      const firstInput = m.querySelector('input');
+      if(firstInput){ setTimeout(()=> firstInput.focus(), 0); }
+    }
+    function closeModal(id){
+      const m = document.getElementById(id);
+      if(!m) return;
+      m.classList.remove('show');
+      m.setAttribute('aria-hidden','true');
+    }
+    document.querySelectorAll('.modal-backdrop').forEach(b=>{
+      b.addEventListener('click', (e)=>{
+        if(e.target === b){ b.classList.remove('show'); b.setAttribute('aria-hidden','true'); }
+      });
+    });
+    document.querySelectorAll('[data-close]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        closeModal(btn.getAttribute('data-close'));
+      });
+    });
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){
+        document.querySelectorAll('.modal-backdrop.show').forEach(m=>{
+          m.classList.remove('show'); m.setAttribute('aria-hidden','true');
+        });
+      }
+    });
+
+    /* 열기 트리거 */
+    document.getElementById('openFindId').addEventListener('click', (e)=>{ e.preventDefault(); openModal('modalFindId'); });
+    document.getElementById('openFindPw').addEventListener('click', (e)=>{ e.preventDefault(); openModal('modalFindPw'); });
+
+    /* 아이디 찾기 (데모) - 현재 입력은 이름/전화만 */
+    document.getElementById('submitFindId').addEventListener('click', ()=>{
+      const name = document.getElementById('findIdName').value.trim();
+      const phone = document.getElementById('findIdPhone').value.trim();
+      if(!name || !phone){
+        alert('이름과 휴대전화 번호를 입력해주세요.');
+        return;
+      }
+      closeModal('modalFindId');
+      alert(`입력하신 정보로 가입된 아이디(이메일)를 안내드렸습니다. (데모)\n이름: ${name}\n전화: ${phone}`);
+    });
+
+    /* 비밀번호 찾기 (데모) - 이메일 정규식 적용 */
+    document.getElementById('submitFindPw').addEventListener('click', ()=>{
+      const targetEmail = document.getElementById('findPwEmail').value.trim();
+      if(!regexMail.test(targetEmail)){
+        alert('이메일 형식을 확인해주세요. (예: name@example.com)');
+        return;
+      }
+      closeModal('modalFindPw');
+      alert(`비밀번호 재설정 메일을 보냈습니다. (데모)\n이메일: ${targetEmail}`);
+    });
+  </script>
+</body>
+</html>
