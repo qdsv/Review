@@ -157,7 +157,7 @@
 
     .oauth{ display: flex; flex-direction: column; gap: 0.625rem; } /* 10px */
     .helper{ color: var(--muted); font-size: 0.8125rem; text-align: center; } /* 13px */
-    .link{ color: var(--focus); text-decoration: none; font-weight: 900; }
+    .link{ color: var(--focus); text-decoration: none; font-weight: 900; font-size: 0.9rem;}
     .link:hover{ text-decoration: underline; }
 
     /* ======= Modal (아이디/비밀번호 찾기 공용) ======= */
